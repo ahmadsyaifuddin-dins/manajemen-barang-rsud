@@ -4,28 +4,53 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\MoonShine\Resources\BarangGudangResource;
+use App\MoonShine\Resources\BarangResource;
+use App\MoonShine\Resources\InventarisBarangResource;
 use MoonShine\Providers\MoonShineApplicationServiceProvider;
 use MoonShine\MoonShine;
 use MoonShine\Menu\MenuGroup;
 use MoonShine\Menu\MenuItem;
 use MoonShine\Resources\MoonShineUserResource;
 use MoonShine\Resources\MoonShineUserRoleResource;
+use App\MoonShine\Resources\RuanganResource;
+use App\MoonShine\Resources\UserResource;
 
 class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
 {
+    /**
+     * Daftarkan resource aplikasi Anda di sini
+     * @return array
+     */
     protected function resources(): array
     {
-        return [];
+        return [
+            new RuanganResource(),
+            new BarangResource(),
+            new BarangGudangResource(),
+            new UserResource(),
+            new InventarisBarangResource(),
+            // ... resource lain
+        ];
     }
 
+    /**
+     * Daftarkan halaman kustom Anda di sini (jika ada)
+     * @return array
+     */
     protected function pages(): array
     {
         return [];
     }
 
+    /**
+     * Konfigurasi menu utama Moonshine
+     * @return array
+     */
     protected function menu(): array
     {
         return [
+            // Grup menu default untuk user/role Moonshine
             MenuGroup::make(static fn() => __('moonshine::ui.resource.system'), [
                MenuItem::make(
                    static fn() => __('moonshine::ui.resource.admins_title'),
@@ -35,14 +60,44 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
                    static fn() => __('moonshine::ui.resource.role_title'),
                    new MoonShineUserRoleResource()
                ),
-            ]),
+            ]), // ->icon('...')
 
-            MenuItem::make('Documentation', 'https://moonshine-laravel.com')
+            // Grup Menu Master Data
+            MenuGroup::make('Master Data', [
+                MenuItem::make(
+                    'Ruangan', 
+                    new RuanganResource()
+                )->icon('heroicons.building-office'), 
+
+                MenuItem::make(
+                    'Barang',
+                    new BarangResource() 
+                )->icon('heroicons.outline.cube'), 
+
+                MenuItem::make(
+                    'Barang Gudang',
+                    new BarangGudangResource() 
+                )->icon('heroicons.outline.archive-box'),
+
+                MenuItem::make(
+                    'User Aplikasi',
+                    new UserResource() 
+                )->icon('heroicons.outline.users'),
+
+            ])->icon('heroicons.outline.building-office-2'), 
+
+            MenuItem::make(
+                'Inventaris Barang',
+                new InventarisBarangResource() 
+            )->icon('heroicons.outline.clipboard-document-list'),
+
+            MenuItem::make('Documentation', 'https://moonshine-laravel.com/docs/2.x')
                ->badge(fn() => 'Check'),
         ];
     }
 
     /**
+     * Konfigurasi tema (opsional)
      * @return array{css: string, colors: array, darkColors: array}
      */
     protected function theme(): array
