@@ -6,21 +6,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // Import BelongsTo
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
-
+    protected $primaryKey = 'no_user'; // Tentukan primary key
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'nama_user',
+        'no_ruangan',
+        'id_user',    // Username lama
+        'email',      // Tambahkan email
+        'password',   // Gunakan 'password'
+        'role_user',  // Tambahkan role jika perlu diisi massal
     ];
 
     /**
@@ -44,5 +48,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function ruangan(): BelongsTo
+    {
+        return $this->belongsTo(Ruangan::class, 'no_ruangan', 'no_ruangan');
     }
 }
