@@ -10,6 +10,8 @@ use App\MoonShine\Resources\GudangKeluarResource;
 use App\MoonShine\Resources\GudangMasukResource;
 use App\MoonShine\Resources\GudangStokResource;
 use App\MoonShine\Resources\InventarisBarangResource;
+use App\MoonShine\Resources\KerusakanResource;
+use App\MoonShine\Resources\PerbaikanResource;
 use MoonShine\Providers\MoonShineApplicationServiceProvider;
 use MoonShine\MoonShine;
 use MoonShine\Menu\MenuGroup;
@@ -17,6 +19,8 @@ use MoonShine\Menu\MenuItem;
 use MoonShine\Resources\MoonShineUserResource;
 use MoonShine\Resources\MoonShineUserRoleResource;
 use App\MoonShine\Resources\RuanganResource;
+use App\MoonShine\Resources\RusakResource;
+use App\MoonShine\Resources\SerahResource;
 use App\MoonShine\Resources\UserResource;
 
 class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
@@ -36,7 +40,10 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
             new GudangStokResource(),
             new GudangMasukResource(),
             new GudangKeluarResource(),
-            // ... resource lain
+            new KerusakanResource(),
+            new PerbaikanResource(),
+            new SerahResource(),
+            new RusakResource(),
         ];
     }
 
@@ -110,13 +117,32 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
 
                 MenuItem::make(
                     'Barang Keluar',
-                    new GudangKeluarResource() // <-- Instansiasi langsung
-                )->icon('heroicons.outline.arrow-up-tray'), // <-- Icon opsional
+                    new GudangKeluarResource()
+                )->icon('heroicons.outline.arrow-up-tray'), 
             ])->icon('heroicons.outline.archive-box-arrow-down'),
 
+            MenuItem::make(
+                'Permintaan Perbaikan',
+                new KerusakanResource() 
+            )->icon('heroicons.outline.arrow-path'),
+
+            MenuItem::make(
+                'Perbaikan Barang',
+                new PerbaikanResource()
+            )->icon('heroicons.outline.wrench-screwdriver'), 
+
+            MenuItem::make(
+                'Serah Terima Barang',
+                new SerahResource()
+            )->icon('heroicons.outline.clipboard-document-check'),
+
+            MenuItem::make(
+                'Barang Rusak Berat',
+                new RusakResource() 
+            )->icon('heroicons.outline.exclamation-circle'),
+          
             MenuItem::make('Documentation', 'https://moonshine-laravel.com/docs/2.x')
                 ->badge(fn() => 'Check'),
-
 
         ];
     }
