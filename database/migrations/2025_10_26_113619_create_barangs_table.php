@@ -17,9 +17,7 @@ return new class extends Migration
             $table->string('jenis_barang', 20);
             $table->string('kategori_barang', 50);
             $table->string('keterangan_barang', 50)->nullable(); // Keterangan bisa kosong
-            // Laravel otomatis menambahkan created_at dan updated_at (timestamps)
-            // Jika tidak dibutuhkan, tambahkan $table->timestamps(false); di bawah id()
-            // Tapi sebaiknya biarkan saja untuk tracking.
+            $table->timestamps();
         });
     }
 
