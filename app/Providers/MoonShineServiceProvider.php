@@ -6,6 +6,9 @@ namespace App\Providers;
 
 use App\MoonShine\Resources\BarangGudangResource;
 use App\MoonShine\Resources\BarangResource;
+use App\MoonShine\Resources\GudangKeluarResource;
+use App\MoonShine\Resources\GudangMasukResource;
+use App\MoonShine\Resources\GudangStokResource;
 use App\MoonShine\Resources\InventarisBarangResource;
 use MoonShine\Providers\MoonShineApplicationServiceProvider;
 use MoonShine\MoonShine;
@@ -30,6 +33,9 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
             new BarangGudangResource(),
             new UserResource(),
             new InventarisBarangResource(),
+            new GudangStokResource(),
+            new GudangMasukResource(),
+            new GudangKeluarResource(),
             // ... resource lain
         ];
     }
@@ -52,47 +58,66 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
         return [
             // Grup menu default untuk user/role Moonshine
             MenuGroup::make(static fn() => __('moonshine::ui.resource.system'), [
-               MenuItem::make(
-                   static fn() => __('moonshine::ui.resource.admins_title'),
-                   new MoonShineUserResource()
-               ),
-               MenuItem::make(
-                   static fn() => __('moonshine::ui.resource.role_title'),
-                   new MoonShineUserRoleResource()
-               ),
+                MenuItem::make(
+                    static fn() => __('moonshine::ui.resource.admins_title'),
+                    new MoonShineUserResource()
+                ),
+                MenuItem::make(
+                    static fn() => __('moonshine::ui.resource.role_title'),
+                    new MoonShineUserRoleResource()
+                ),
             ]), // ->icon('...')
 
             // Grup Menu Master Data
             MenuGroup::make('Master Data', [
                 MenuItem::make(
-                    'Ruangan', 
+                    'Ruangan',
                     new RuanganResource()
-                )->icon('heroicons.building-office'), 
+                )->icon('heroicons.building-office'),
 
                 MenuItem::make(
                     'Barang',
-                    new BarangResource() 
-                )->icon('heroicons.outline.cube'), 
+                    new BarangResource()
+                )->icon('heroicons.outline.cube'),
 
                 MenuItem::make(
                     'Barang Gudang',
-                    new BarangGudangResource() 
+                    new BarangGudangResource()
                 )->icon('heroicons.outline.archive-box'),
 
                 MenuItem::make(
                     'User Aplikasi',
-                    new UserResource() 
+                    new UserResource()
                 )->icon('heroicons.outline.users'),
 
-            ])->icon('heroicons.outline.building-office-2'), 
+            ])->icon('heroicons.outline.building-office-2'),
 
             MenuItem::make(
                 'Inventaris Barang',
-                new InventarisBarangResource() 
+                new InventarisBarangResource()
             )->icon('heroicons.outline.clipboard-document-list'),
 
+            MenuGroup::make('Gudang', [
+                MenuItem::make(
+                    'Stok Gudang',
+                    new GudangStokResource()
+                )->icon('heroicons.outline.circle-stack'),
+
+                MenuItem::make(
+                    'Barang Masuk',
+                    new GudangMasukResource()
+                )->icon('heroicons.outline.arrow-down-tray'),
+
+                MenuItem::make(
+                    'Barang Keluar',
+                    new GudangKeluarResource() // <-- Instansiasi langsung
+                )->icon('heroicons.outline.arrow-up-tray'), // <-- Icon opsional
+            ])->icon('heroicons.outline.archive-box-arrow-down'),
+
             MenuItem::make('Documentation', 'https://moonshine-laravel.com/docs/2.x')
-               ->badge(fn() => 'Check'),
+                ->badge(fn() => 'Check'),
+
+
         ];
     }
 
