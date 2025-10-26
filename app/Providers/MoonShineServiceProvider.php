@@ -4,33 +4,49 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use MoonShine\Contracts\Core\DependencyInjection\ConfiguratorContract;
-use MoonShine\Contracts\Core\DependencyInjection\CoreContract;
-use MoonShine\Laravel\DependencyInjection\MoonShine;
-use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
-use App\MoonShine\Resources\MoonShineUserResource;
-use App\MoonShine\Resources\MoonShineUserRoleResource;
+use MoonShine\Providers\MoonShineApplicationServiceProvider;
+use MoonShine\MoonShine;
+use MoonShine\Menu\MenuGroup;
+use MoonShine\Menu\MenuItem;
+use MoonShine\Resources\MoonShineUserResource;
+use MoonShine\Resources\MoonShineUserRoleResource;
 
-class MoonShineServiceProvider extends ServiceProvider
+class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
 {
-    /**
-     * @param  MoonShine  $core
-     * @param  MoonShineConfigurator  $config
-     *
-     */
-    public function boot(CoreContract $core, ConfiguratorContract $config): void
+    protected function resources(): array
     {
-        // $config->authEnable();
+        return [];
+    }
 
-        $core
-            ->resources([
-                MoonShineUserResource::class,
-                MoonShineUserRoleResource::class,
-            ])
-            ->pages([
-                ...$config->getPages(),
-            ])
-        ;
+    protected function pages(): array
+    {
+        return [];
+    }
+
+    protected function menu(): array
+    {
+        return [
+            MenuGroup::make(static fn() => __('moonshine::ui.resource.system'), [
+               MenuItem::make(
+                   static fn() => __('moonshine::ui.resource.admins_title'),
+                   new MoonShineUserResource()
+               ),
+               MenuItem::make(
+                   static fn() => __('moonshine::ui.resource.role_title'),
+                   new MoonShineUserRoleResource()
+               ),
+            ]),
+
+            MenuItem::make('Documentation', 'https://moonshine-laravel.com')
+               ->badge(fn() => 'Check'),
+        ];
+    }
+
+    /**
+     * @return array{css: string, colors: array, darkColors: array}
+     */
+    protected function theme(): array
+    {
+        return [];
     }
 }
