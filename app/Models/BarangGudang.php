@@ -4,16 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany; // Import HasMany
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BarangGudang extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'no_barang_gudang'; // Tentukan primary key
+    protected $table = 'barang_gudangs'; // Nama tabel
+    protected $primaryKey = 'no_barang_gudang'; // Primary key
+    public $incrementing = false; // Jika PK bukan auto increment
+    protected $keyType = 'string'; // Jika PK bertipe string
+
+    // Tambahkan fillable untuk mass assignment
+    protected $fillable = [
+        'no_barang_gudang',
+        'nama_barang_gudang',
+        'jenis_barang_gudang',
+        'kategori_barang_gudang',
+    ];
 
     /**
-     * Mendapatkan semua data stok untuk barang gudang ini.
+     * Relasi: BarangGudang memiliki banyak GudangStok
      */
     public function gudangStoks(): HasMany
     {

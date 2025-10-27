@@ -121,15 +121,17 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
                 )->icon('heroicons.outline.arrow-up-tray'), 
             ])->icon('heroicons.outline.archive-box-arrow-down'),
 
-            MenuItem::make(
-                'Permintaan Perbaikan',
-                new KerusakanResource() 
-            )->icon('heroicons.outline.arrow-path'),
+            MenuGroup::make('Perbaikan', [
+                MenuItem::make(
+                    'Permintaan Perbaikan',
+                    new KerusakanResource() 
+                )->icon('heroicons.outline.arrow-path'),
 
-            MenuItem::make(
-                'Perbaikan Barang',
-                new PerbaikanResource()
-            )->icon('heroicons.outline.wrench-screwdriver'), 
+                MenuItem::make(
+                    'Perbaikan Barang',
+                    new PerbaikanResource()
+                )->icon('heroicons.outline.wrench-screwdriver'), 
+            ])->icon('heroicons.outline.wrench-screwdriver'),
 
             MenuItem::make(
                 'Serah Terima Barang',

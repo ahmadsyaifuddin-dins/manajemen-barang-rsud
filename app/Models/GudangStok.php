@@ -12,6 +12,12 @@ class GudangStok extends Model
     use HasFactory;
 
     protected $primaryKey = 'no_gudang'; // Primary key
+    
+    protected $fillable = [
+        'no_barang_gudang',
+        'jumlah_barang',
+        'keterangan_gudang',
+    ];
 
     /**
      * Mendapatkan barang gudang yang terkait dengan stok ini.
@@ -20,6 +26,7 @@ class GudangStok extends Model
     {
         return $this->belongsTo(BarangGudang::class, 'no_barang_gudang', 'no_barang_gudang');
     }
+    
 
     /**
      * Mendapatkan semua record barang masuk untuk stok ini.

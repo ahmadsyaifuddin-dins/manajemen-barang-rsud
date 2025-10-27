@@ -13,6 +13,16 @@ class InventarisBarang extends Model
 
     protected $primaryKey = 'no_inventaris'; // Tentukan primary key
 
+    protected $fillable = [
+        'no_inventaris',
+        'no_ruangan',
+        'no_barang',
+        'kode_barang',
+        'tanggal_masuk',
+        'kondisi',
+        'keterangan_inventaris',
+    ];
+    
     /**
      * Mendapatkan barang yang terkait dengan inventaris ini.
      */

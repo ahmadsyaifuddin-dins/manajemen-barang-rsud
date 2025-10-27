@@ -31,7 +31,7 @@ return new class extends Migration
                   ->onDelete('cascade');  // Opsional: Hapus inventaris jika barang dihapus
 
             // Kolom lain dari SQL
-            $table->integer('kode_barang')->nullable(); // Kode barang bisa integer dan boleh null
+            $table->char('kode_barang', 25)->nullable(); // Kode barang 25 karakter dan bisa null
             $table->date('tanggal_masuk');
             $table->string('kondisi', 5); // Sesuaikan panjang jika perlu
             $table->string('keterangan_inventaris', 50)->nullable();
