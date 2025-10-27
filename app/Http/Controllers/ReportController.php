@@ -136,7 +136,7 @@ class ReportController extends Controller
     }
 
     /**
-     * 4. TAMBAHKAN METHOD BARU UNTUK BARANG MASUK EXCEL
+     * 4. METHOD UNTUK BARANG MASUK EXCEL
      */
     public function barangMasukExcel(Request $request)
     {
