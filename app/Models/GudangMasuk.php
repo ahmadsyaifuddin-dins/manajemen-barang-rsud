@@ -12,6 +12,12 @@ class GudangMasuk extends Model
 
     protected $primaryKey = 'no_gudang_masuk'; // Primary key
 
+    protected $fillable = [
+        'no_gudang_masuk',
+        'no_gudang',
+        'tanggal_masuk',
+        'jumlah_masuk',
+    ];
     /**
      * Mendapatkan data stok yang terkait dengan record masuk ini.
      */

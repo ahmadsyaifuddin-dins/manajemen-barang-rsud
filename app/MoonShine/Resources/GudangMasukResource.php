@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources;
 
+use Illuminate\Database\Eloquent\Builder; // Import Builder
 use Illuminate\Database\Eloquent\Model;
 use App\Models\GudangMasuk;
 use App\Models\GudangStok; // Import model relasi
-use App\Models\BarangGudang; // Import BarangGudang untuk menampilkan nama
 
+use MoonShine\ActionButtons\ActionButton;
 use MoonShine\Resources\ModelResource;
 use MoonShine\Decorations\Block;
+
 use MoonShine\Fields\ID;
 use MoonShine\Fields\Date;
+use MoonShine\Fields\DateRange;
 use MoonShine\Fields\Number;
 use MoonShine\Fields\Relationships\BelongsTo;
 
@@ -29,29 +32,52 @@ class GudangMasukResource extends ModelResource
     // Urutan menu (setelah Stok Gudang)
     protected int $priority = 2;
 
+    public function query(): Builder
+    {
+        /** @var Builder $query */
+        $query = parent::query();
+        $query->with(['gudangStok.barangGudang']);
+
+        // Handle custom filter untuk jumlah_masuk range
+        if (request()->filled('filters.jumlah_masuk_from')) {
+            $query->where('jumlah_masuk', '>=', request('filters.jumlah_masuk_from'));
+        }
+
+        if (request()->filled('filters.jumlah_masuk_to')) {
+            $query->where('jumlah_masuk', '<=', request('filters.jumlah_masuk_to'));
+        }
+
+        return $query;
+    }
+
     // Field utama
     public function fields(): array
     {
         return [
             Block::make([
-                ID::make('No', 'no_gudang_masuk')->sortable(),
+                ID::make('No', 'no_gudang_masuk')->sortable()->showOnExport(),
 
-                // Relasi ke GudangStok (menampilkan nama barang gudang)
-                BelongsTo::make('Barang Gudang', 'gudangStok',
-                    // Closure untuk format tampilan: ambil nama barang dari relasi gudangStok ke barangGudang
-                    fn(GudangStok $stok) => $stok->barangGudang->nama_barang_gudang ?? 'N/A'
+                // Relasi ke GudangStok, tapi menampilkan nama BarangGudang
+                BelongsTo::make(
+                    'Barang',
+                    'gudangStok',
+                    // Format tampilan: "Nama Barang (Kategori)"
+                    formatted: fn(GudangStok $model) => $model->barangGudang->nama_barang_gudang . ' (' . $model->barangGudang->kategori_barang_gudang . ')'
                 )
-                    ->searchable() // Memungkinkan pencarian berdasarkan nama barang (melalui relasi)
-                    ->required(),
+                    ->searchable()
+                    ->required()
+                    ->showOnExport(),
 
                 Date::make('Tanggal Masuk', 'tanggal_masuk')
                     ->format('d-m-Y')
                     ->required()
-                    ->sortable(),
+                    ->sortable()
+                    ->showOnExport(),
 
                 Number::make('Jumlah Masuk', 'jumlah_masuk')
                     ->required()
-                    ->sortable(),
+                    ->sortable()
+                    ->showOnExport(),
             ])
         ];
     }
@@ -68,12 +94,28 @@ class GudangMasukResource extends ModelResource
         ];
     }
 
+    public function filters(): array
+    {
+        return [
+            // Filter berdasarkan relasi (pilih barang)
+            BelongsTo::make(
+                'Barang',
+                'gudangStok',
+                formatted: fn(GudangStok $model) => $model->barangGudang->nama_barang_gudang
+            )->searchable(),
+
+            // Filter berdasarkan tanggal
+            DateRange::make('Tanggal Masuk', 'tanggal_masuk')
+                ->format('d-m-Y'),
+        ];
+    }
+
     // Searchable columns
     public function search(): array
     {
         // Bisa cari berdasarkan ID Masuk atau Tanggal
         // Pencarian nama barang ditangani oleh BelongsTo
-        return ['no_gudang_masuk', 'tanggal_masuk'];
+        return ['no_gudang_masuk', 'tanggal_masuk', 'jumlah_masuk'];
     }
 
     // Definisikan relasi agar BelongsTo berfungsi
@@ -81,6 +123,29 @@ class GudangMasukResource extends ModelResource
     {
         return [
             'gudangStok' => ['nama_barang_gudang', 'no_barang_gudang'], // Sertakan kolom dari relasi barangGudang di dalam gudangStok
+        ];
+    }
+
+    public function actions(): array
+    {
+        return [
+            ActionButton::make('Reset', request()->url())
+                ->icon('heroicons.outline.arrow-path')
+                ->secondary(),
+
+            ActionButton::make(
+                'Cetak PDF',
+                fn() => route('report.gudang.masuk.pdf') . '?' . request()->getQueryString()
+            )
+                ->icon('heroicons.outline.printer')
+                ->blank(),
+
+            ActionButton::make(
+                'Export Excel',
+                fn() => route('report.gudang.masuk.excel') . '?' . request()->getQueryString()
+            )
+                ->icon('heroicons.outline.table-cells')
+                ->blank(),
         ];
     }
 

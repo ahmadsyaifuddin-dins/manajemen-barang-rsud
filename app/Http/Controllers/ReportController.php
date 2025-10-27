@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\GudangMasukExport;
 use App\Exports\GudangStokExport;
 use App\Exports\InventarisExport;
 use Illuminate\Http\Request;
 use App\Models\InventarisBarang;
+use App\MoonShine\Resources\GudangMasukResource;
 use App\MoonShine\Resources\GudangStokResource;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -112,6 +114,42 @@ class ReportController extends Controller
         return Excel::download(
             new GudangStokExport($filteredData), 
             'laporan-stok-gudang-' . $tanggalCetak . '.xlsx'
+        );
+    }
+
+    public function barangMasukPdf(Request $request)
+    {
+        $resource = new GudangMasukResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y H:i:s');
+
+        $pdf = Pdf::loadView('reports.barang_masuk_pdf', [
+            'masukData' => $filteredData,
+            'tanggalCetak' => $tanggalCetak
+        ]);
+
+        $pdf->setPaper('a4', 'landscape'); // Landscape agar lebih muat
+        return $pdf->stream('laporan-barang-masuk-' . $tanggalCetak . '.pdf');
+    }
+
+    /**
+     * 4. TAMBAHKAN METHOD BARU UNTUK BARANG MASUK EXCEL
+     */
+    public function barangMasukExcel(Request $request)
+    {
+        $resource = new GudangMasukResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y');
+
+        return Excel::download(
+            new GudangMasukExport($filteredData), 
+            'laporan-barang-masuk-' . $tanggalCetak . '.xlsx'
         );
     }
 }
