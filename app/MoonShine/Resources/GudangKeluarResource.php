@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\GudangKeluar;
 use App\Models\GudangStok; // Import model relasi stok
 use App\Models\Ruangan;   // Import model relasi ruangan
-use App\Models\BarangGudang; // Import BarangGudang untuk nama
 
 use MoonShine\Resources\ModelResource;
 use MoonShine\Decorations\Block;
@@ -17,7 +16,6 @@ use MoonShine\Fields\Date;
 use MoonShine\Fields\Number;
 use MoonShine\Fields\Text;
 use MoonShine\Fields\Relationships\BelongsTo;
-
 
 class GudangKeluarResource extends ModelResource
 {
