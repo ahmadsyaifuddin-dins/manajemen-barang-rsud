@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\MoonShine\Pages\ReportPage;
 use App\MoonShine\Resources\BarangGudangResource;
 use App\MoonShine\Resources\BarangResource;
 use App\MoonShine\Resources\GudangKeluarResource;
@@ -137,10 +138,11 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
                 'Barang Rusak Berat',
                 new RusakResource() 
             )->icon('heroicons.outline.exclamation-circle'),
-          
-            MenuItem::make('Documentation', 'https://moonshine-laravel.com/docs/2.x')
-                ->badge(fn() => 'Check'),
 
+            MenuItem::make(
+                'Laporan',
+                new ReportPage()
+            )->icon('heroicons.outline.document-text'),
         ];
     }
 
