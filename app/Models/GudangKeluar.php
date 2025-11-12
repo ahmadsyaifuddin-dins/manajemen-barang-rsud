@@ -13,8 +13,12 @@ class GudangKeluar extends Model
     protected $primaryKey = 'no_gudang_keluar'; // Primary key
 
     protected $fillable = [
-        
-
+        'no_gudang_keluar',
+        'no_gudang',
+        'no_ruangan',
+        'tanggal_keluar',
+        'jumlah_keluar',
+        'keterangan_keluar',        
     ];
     /**
      * Mendapatkan data stok yang terkait dengan record keluar ini.
