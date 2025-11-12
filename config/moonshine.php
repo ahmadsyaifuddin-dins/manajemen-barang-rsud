@@ -1,5 +1,6 @@
 <?php
 
+use App\MoonShine\Layout\AppLayout;
 use MoonShine\Exceptions\MoonShineNotFoundException;
 use MoonShine\Forms\LoginForm;
 use MoonShine\Http\Middleware\Authenticate;
@@ -12,9 +13,9 @@ return [
     'dir' => 'app/MoonShine',
     'namespace' => 'App\MoonShine',
 
-    'title' => env('MOONSHINE_TITLE', 'MoonShine'),
-    'logo' => env('MOONSHINE_LOGO'),
-    'logo_small' => env('MOONSHINE_LOGO_SMALL'),
+    'title' => env('MOONSHINE_TITLE', 'Manajemen Barang RSUD'),
+    'logo' => env('MOONSHINE_LOGO', '/rsudhbk.png'),
+    'logo_small' => env('MOONSHINE_LOGO_SMALL', '/rsudhbk.png'),
 
     'route' => [
         'prefix' => env('MOONSHINE_ROUTE_PREFIX', 'admin'),
@@ -25,11 +26,19 @@ return [
         'notFoundHandler' => MoonShineNotFoundException::class,
     ],
 
+    'footer' => env('MOONSHINE_FOOTER', '
+        <div class="text-center">
+            &copy; ' . date('Y') . ' RSUD H. Badaruddin Kasim.
+            <br/>
+            <span class="text-sm opacity-50">Dikelola oleh Tim IT RSUD.</span>
+        </div>
+    '),
+
     'use_migrations' => true,
     'use_notifications' => true,
     'use_theme_switcher' => true,
 
-    'layout' => MoonShineLayout::class,
+    'layout' => AppLayout::class,
 
     'disk' => 'public',
 
