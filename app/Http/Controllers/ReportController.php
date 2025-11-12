@@ -8,6 +8,7 @@ use App\Exports\GudangStokExport;
 use App\Exports\InventarisExport;
 use App\Exports\KerusakanExport;
 use App\Exports\PerbaikanExport;
+use App\Exports\SerahExport;
 use Illuminate\Http\Request;
 use App\Models\InventarisBarang;
 use App\MoonShine\Resources\GudangKeluarResource;
@@ -18,6 +19,7 @@ use Carbon\Carbon;
 use App\MoonShine\Resources\InventarisBarangResource;
 use App\MoonShine\Resources\KerusakanResource;
 use App\MoonShine\Resources\PerbaikanResource;
+use App\MoonShine\Resources\SerahResource;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -264,6 +266,42 @@ class ReportController extends Controller
         return Excel::download(
             new PerbaikanExport($filteredData), 
             'laporan-perbaikan-' . $tanggalCetak . '.xlsx'
+        );
+    }
+
+    public function serahPdf(Request $request)
+    {
+        $resource = new SerahResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y H:i:s');
+
+        $pdf = Pdf::loadView('reports.serah_pdf', [
+            'serahData' => $filteredData,
+            'tanggalCetak' => $tanggalCetak
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+        return $pdf->stream('laporan-serah-terima-' . $tanggalCetak . '.pdf');
+    }
+
+    /**
+     * UNTUK SERAH TERIMA EXCEL
+     */
+    public function serahExcel(Request $request)
+    {
+        $resource = new SerahResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y');
+
+        return Excel::download(
+            new SerahExport($filteredData), 
+            'laporan-serah-terima-' . $tanggalCetak . '.xlsx'
         );
     }
 }

@@ -92,11 +92,6 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
                     new BarangGudangResource()
                 )->icon('heroicons.outline.archive-box'),
 
-                MenuItem::make(
-                    'User Aplikasi',
-                    new UserResource()
-                )->icon('heroicons.outline.users'),
-
             ])->icon('heroicons.outline.building-office-2'),
 
             MenuItem::make(
