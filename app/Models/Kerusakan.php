@@ -13,6 +13,14 @@ class Kerusakan extends Model
 
     protected $primaryKey = 'no_kerusakan'; // Primary key
 
+    protected $fillable = [
+        'no_kerusakan',
+        'no_inventaris',
+        'tanggal',
+        'kerusakan',
+        'status_kerusakan',
+        'keterangan_kerusakan',
+    ];
     /**
      * Mendapatkan data inventaris yang rusak.
      */

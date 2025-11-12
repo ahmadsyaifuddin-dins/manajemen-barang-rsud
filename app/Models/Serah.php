@@ -12,6 +12,13 @@ class Serah extends Model
 
     protected $primaryKey = 'no_serah'; // Primary key
 
+    protected $fillable = [
+        'no_perbaikan',
+        'no_inventaris',
+        'tanggal',
+        'status',
+        'keterangan',
+    ];
     /**
      * Mendapatkan data perbaikan yang diserahterimakan.
      */

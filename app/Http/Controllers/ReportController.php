@@ -8,6 +8,7 @@ use App\Exports\GudangStokExport;
 use App\Exports\InventarisExport;
 use App\Exports\KerusakanExport;
 use App\Exports\PerbaikanExport;
+use App\Exports\RusakExport;
 use App\Exports\SerahExport;
 use Illuminate\Http\Request;
 use App\Models\InventarisBarang;
@@ -19,6 +20,7 @@ use Carbon\Carbon;
 use App\MoonShine\Resources\InventarisBarangResource;
 use App\MoonShine\Resources\KerusakanResource;
 use App\MoonShine\Resources\PerbaikanResource;
+use App\MoonShine\Resources\RusakResource;
 use App\MoonShine\Resources\SerahResource;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -302,6 +304,42 @@ class ReportController extends Controller
         return Excel::download(
             new SerahExport($filteredData), 
             'laporan-serah-terima-' . $tanggalCetak . '.xlsx'
+        );
+    }
+
+    public function rusakPdf(Request $request)
+    {
+        $resource = new RusakResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y H:i:s');
+
+        $pdf = Pdf::loadView('reports.rusak_pdf', [
+            'rusakData' => $filteredData,
+            'tanggalCetak' => $tanggalCetak
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+        return $pdf->stream('laporan-barang-rusak-' . $tanggalCetak . '.pdf');
+    }
+
+    /**
+     * 4. TAMBAHKAN METHOD BARU UNTUK RUSAK EXCEL
+     */
+    public function rusakExcel(Request $request)
+    {
+        $resource = new RusakResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y');
+
+        return Excel::download(
+            new RusakExport($filteredData), 
+            'laporan-barang-rusak-' . $tanggalCetak . '.xlsx'
         );
     }
 }

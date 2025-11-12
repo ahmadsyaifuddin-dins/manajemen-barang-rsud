@@ -12,6 +12,12 @@ class Barang extends Model
 
     protected $primaryKey = 'no_barang'; // Tentukan primary key jika bukan 'id'
 
+    protected $fillable = [
+        'no_barang',
+        'nama_barang',
+        'jenis_barang',
+        'kategori_barang',
+    ];
     /**
      * Mendapatkan semua inventaris untuk barang ini.
      */

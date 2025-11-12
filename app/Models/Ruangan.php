@@ -12,6 +12,10 @@ class Ruangan extends Model
 
     protected $primaryKey = 'no_ruangan'; // Tentukan primary key
 
+    protected $fillable = [
+        'no_ruangan',
+        'nama_ruangan',
+    ];
     /**
      * Mendapatkan semua inventaris barang di ruangan ini.
      */
