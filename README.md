@@ -97,17 +97,21 @@ Pastikan sistem Anda telah terinstal perangkat lunak berikut:
     ```bash
     php artisan moonshine:user
     ```
-    
     buat aja nanti
     email nya `admin@gmail.com`, nama `Admin`, passwordnya `password`
-    
 
-10.  **Jalankan Server Pengembangan**
+9.  **Jalankan Server Pengembangan**
     Untuk menjalankan server pengembangan PHP, gunakan perintah berikut:
     ```bash
     php artisan serve
     ```
     Server akan berjalan di `http://127.0.0.1:8000`.
+
+10. **Jalankan Vite**
+    Buka terminal baru dan jalankan Vite untuk kompilasi aset frontend.
+    ```bash
+    npm run dev
+    ```
 
 11. **Jalankan Vite**
     Buka terminal baru dan jalankan Vite untuk kompilasi aset frontend.
