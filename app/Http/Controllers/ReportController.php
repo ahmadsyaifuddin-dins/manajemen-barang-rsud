@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\GudangKeluarExport;
 use App\Exports\GudangMasukExport;
 use App\Exports\GudangStokExport;
 use App\Exports\InventarisExport;
 use Illuminate\Http\Request;
 use App\Models\InventarisBarang;
+use App\MoonShine\Resources\GudangKeluarResource;
 use App\MoonShine\Resources\GudangMasukResource;
 use App\MoonShine\Resources\GudangStokResource;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -150,6 +152,42 @@ class ReportController extends Controller
         return Excel::download(
             new GudangMasukExport($filteredData), 
             'laporan-barang-masuk-' . $tanggalCetak . '.xlsx'
+        );
+    }
+
+    public function barangKeluarPdf(Request $request)
+    {
+        $resource = new GudangKeluarResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y H:i:s');
+
+        $pdf = Pdf::loadView('reports.barang_keluar_pdf', [
+            'keluarData' => $filteredData,
+            'tanggalCetak' => $tanggalCetak
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+        return $pdf->stream('laporan-barang-keluar-' . $tanggalCetak . '.pdf');
+    }
+
+    /**
+     * 4. BARANG KELUAR EXCEL
+     */
+    public function barangKeluarExcel(Request $request)
+    {
+        $resource = new GudangKeluarResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y');
+
+        return Excel::download(
+            new GudangKeluarExport($filteredData), 
+            'laporan-barang-keluar-' . $tanggalCetak . '.xlsx'
         );
     }
 }

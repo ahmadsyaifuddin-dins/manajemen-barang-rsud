@@ -10,6 +10,7 @@ use App\Models\GudangMasuk;
 use App\Models\GudangStok; // Import model relasi
 
 use MoonShine\ActionButtons\ActionButton;
+use MoonShine\Handlers\ExportHandler; // Import ExportHandler
 use MoonShine\Resources\ModelResource;
 use MoonShine\Decorations\Block;
 
@@ -21,47 +22,32 @@ use MoonShine\Fields\Relationships\BelongsTo;
 
 class GudangMasukResource extends ModelResource
 {
-    // Properti TANPA static
     protected string $model = GudangMasuk::class;
-
-    protected string $title = 'Barang Masuk Gudang'; // Judul
-
-    // Kolom yang tampil di relasi atau pencarian default
-    public string $titleField = 'no_gudang_masuk'; // Atau sesuaikan jika perlu
-
-    // Urutan menu (setelah Stok Gudang)
+    protected string $title = 'Barang Masuk Gudang';
+    public string $titleField = 'no_gudang_masuk';
     protected int $priority = 2;
 
     public function query(): Builder
     {
         /** @var Builder $query */
         $query = parent::query();
-        $query->with(['gudangStok.barangGudang']);
-
-        // Handle custom filter untuk jumlah_masuk range
-        if (request()->filled('filters.jumlah_masuk_from')) {
-            $query->where('jumlah_masuk', '>=', request('filters.jumlah_masuk_from'));
-        }
-
-        if (request()->filled('filters.jumlah_masuk_to')) {
-            $query->where('jumlah_masuk', '<=', request('filters.jumlah_masuk_to'));
-        }
-
-        return $query;
+        
+        // Cukup eager load relasi.
+        // Logika filter manual sudah tidak diperlukan
+        // karena sudah ditangani oleh search() dan filters().
+        return $query->with(['gudangStok.barangGudang']);
     }
 
-    // Field utama
+    // Field utama (Kode Anda sudah sempurna)
     public function fields(): array
     {
         return [
             Block::make([
                 ID::make('No', 'no_gudang_masuk')->sortable()->showOnExport(),
 
-                // Relasi ke GudangStok, tapi menampilkan nama BarangGudang
                 BelongsTo::make(
                     'Barang',
                     'gudangStok',
-                    // Format tampilan: "Nama Barang (Kategori)"
                     formatted: fn(GudangStok $model) => $model->barangGudang->nama_barang_gudang . ' (' . $model->barangGudang->kategori_barang_gudang . ')'
                 )
                     ->searchable()
@@ -82,18 +68,19 @@ class GudangMasukResource extends ModelResource
         ];
     }
 
-    // Aturan validasi
+    // Rules (Kode Anda sudah sempurna)
     public function rules(Model $item): array
     {
-        // Validasi tambahan: jumlah masuk tidak boleh lebih besar dari stok saat diedit (logika ini lebih kompleks, mungkin perlu Observer)
-        // Untuk sementara, validasi dasar:
         return [
             'no_gudang' => ['required', 'exists:gudang_stoks,no_gudang'],
             'tanggal_masuk' => ['required', 'date'],
-            'jumlah_masuk' => ['required', 'integer', 'min:1'], // Minimal 1
+            'jumlah_masuk' => ['required', 'integer', 'min:1'],
         ];
     }
 
+    /**
+     * Filter (Kode Anda sudah sempurna, tanpa Range)
+     */
     public function filters(): array
     {
         return [
@@ -110,22 +97,34 @@ class GudangMasukResource extends ModelResource
         ];
     }
 
-    // Searchable columns
+    /**
+     * Searchable columns
+     * KITA TAMBAHKAN 'jumlah_masuk' DI SINI
+     * agar search bar atas berfungsi
+     */
     public function search(): array
     {
-        // Bisa cari berdasarkan ID Masuk atau Tanggal
-        // Pencarian nama barang ditangani oleh BelongsTo
         return ['no_gudang_masuk', 'tanggal_masuk', 'jumlah_masuk'];
     }
 
-    // Definisikan relasi agar BelongsTo berfungsi
+    /**
+     * Definisikan relasi agar BelongsTo berfungsi
+     * Cukup nama relasinya saja
+     */
     public function getRelations(): array
     {
         return [
-            'gudangStok' => ['nama_barang_gudang', 'no_barang_gudang'], // Sertakan kolom dari relasi barangGudang di dalam gudangStok
+            'gudangStok', 
         ];
     }
 
+    // Matikan export bawaan
+    public function export(): ?ExportHandler
+    {
+        return null;
+    }
+
+    // Tombol Aksi (Kode Anda sudah sempurna)
     public function actions(): array
     {
         return [
@@ -148,14 +147,4 @@ class GudangMasukResource extends ModelResource
                 ->blank(),
         ];
     }
-
-    // Jika Anda ingin mengupdate stok saat create/update/delete GudangMasuk,
-    // cara terbaik adalah menggunakan Model Observer.
-    // public function onBoot(): void
-    // {
-    //     // Logika update stok bisa ditambahkan di sini (kurang ideal)
-    //     // atau lebih baik gunakan Observer
-    // }
-
-    // filters() and actions() can be added here if needed
 }
