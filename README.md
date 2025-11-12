@@ -47,7 +47,6 @@ Pastikan sistem Anda telah terinstal perangkat lunak berikut:
     ```bash
     git clone https://github.com/ahmadsyaifuddin-dins/manajemen-barang-rsud.git
     ```
-    Ganti `https://github.com/username/manajemen-barang-rsud.git` dengan URL repositori yang sebenarnya.
 
 2.  **Masuk ke Direktori Proyek**
     ```bash
