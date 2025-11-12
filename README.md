@@ -97,8 +97,10 @@ Pastikan sistem Anda telah terinstal perangkat lunak berikut:
     ```bash
     php artisan moonshine:user
     ```
+    
     buat aja nanti
     email nya `admin@gmail.com`, nama `Admin`, passwordnya `password`
+    
 
 10.  **Jalankan Server Pengembangan**
     Untuk menjalankan server pengembangan PHP, gunakan perintah berikut:
