@@ -6,6 +6,7 @@ use App\Exports\GudangKeluarExport;
 use App\Exports\GudangMasukExport;
 use App\Exports\GudangStokExport;
 use App\Exports\InventarisExport;
+use App\Exports\KerusakanExport;
 use Illuminate\Http\Request;
 use App\Models\InventarisBarang;
 use App\MoonShine\Resources\GudangKeluarResource;
@@ -14,6 +15,7 @@ use App\MoonShine\Resources\GudangStokResource;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use App\MoonShine\Resources\InventarisBarangResource;
+use App\MoonShine\Resources\KerusakanResource;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -188,6 +190,42 @@ class ReportController extends Controller
         return Excel::download(
             new GudangKeluarExport($filteredData), 
             'laporan-barang-keluar-' . $tanggalCetak . '.xlsx'
+        );
+    }
+
+    public function kerusakanPdf(Request $request)
+    {
+        $resource = new KerusakanResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y H:i:s');
+
+        $pdf = Pdf::loadView('reports.kerusakan_pdf', [
+            'kerusakanData' => $filteredData,
+            'tanggalCetak' => $tanggalCetak
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+        return $pdf->stream('laporan-kerusakan-' . $tanggalCetak . '.pdf');
+    }
+
+    /**
+     * 4. TAMBAHKAN METHOD BARU UNTUK KERUSAKAN EXCEL
+     */
+    public function kerusakanExcel(Request $request)
+    {
+        $resource = new KerusakanResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y');
+
+        return Excel::download(
+            new KerusakanExport($filteredData), 
+            'laporan-kerusakan-' . $tanggalCetak . '.xlsx'
         );
     }
 }
