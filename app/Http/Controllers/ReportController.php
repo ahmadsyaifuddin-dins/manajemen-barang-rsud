@@ -7,6 +7,7 @@ use App\Exports\GudangMasukExport;
 use App\Exports\GudangStokExport;
 use App\Exports\InventarisExport;
 use App\Exports\KerusakanExport;
+use App\Exports\PerbaikanExport;
 use Illuminate\Http\Request;
 use App\Models\InventarisBarang;
 use App\MoonShine\Resources\GudangKeluarResource;
@@ -16,6 +17,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use App\MoonShine\Resources\InventarisBarangResource;
 use App\MoonShine\Resources\KerusakanResource;
+use App\MoonShine\Resources\PerbaikanResource;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -212,7 +214,7 @@ class ReportController extends Controller
     }
 
     /**
-     * 4. TAMBAHKAN METHOD BARU UNTUK KERUSAKAN EXCEL
+     * 4. UNTUK KERUSAKAN EXCEL
      */
     public function kerusakanExcel(Request $request)
     {
@@ -226,6 +228,42 @@ class ReportController extends Controller
         return Excel::download(
             new KerusakanExport($filteredData), 
             'laporan-kerusakan-' . $tanggalCetak . '.xlsx'
+        );
+    }
+
+    public function perbaikanPdf(Request $request)
+    {
+        $resource = new PerbaikanResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y H:i:s');
+
+        $pdf = Pdf::loadView('reports.perbaikan_pdf', [
+            'perbaikanData' => $filteredData,
+            'tanggalCetak' => $tanggalCetak
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+        return $pdf->stream('laporan-perbaikan-' . $tanggalCetak . '.pdf');
+    }
+
+    /**
+     * 4. TAMBAHKAN METHOD BARU UNTUK PERBAIKAN EXCEL
+     */
+    public function perbaikanExcel(Request $request)
+    {
+        $resource = new PerbaikanResource();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $resource->resolveQuery();
+        $filteredData = $query->get();
+        
+        $tanggalCetak = Carbon::now('Asia/Makassar')->format('d-m-Y');
+
+        return Excel::download(
+            new PerbaikanExport($filteredData), 
+            'laporan-perbaikan-' . $tanggalCetak . '.xlsx'
         );
     }
 }

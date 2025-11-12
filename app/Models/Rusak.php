@@ -12,6 +12,14 @@ class Rusak extends Model
 
     protected $primaryKey = 'no_rusak'; // Primary key
 
+    protected $fillable = [
+        'no_perbaikan',
+        'no_inventaris',
+        'tanggal',
+        'kerusakan',
+        'status_rusak',
+        'keterangan_rusak',
+    ];
     /**
      * Mendapatkan data perbaikan yang dinyatakan rusak berat.
      */
