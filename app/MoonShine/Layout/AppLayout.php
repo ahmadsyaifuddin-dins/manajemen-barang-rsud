@@ -22,7 +22,7 @@ final class AppLayout implements MoonShineLayoutContract
         return LayoutBuilder::make([
             Sidebar::make([
                 Menu::make()->customAttributes(['class' => 'mt-2']),
-                Profile::make(),
+                // Profile::make(),
             ]),
             LayoutBlock::make([
                 Flash::make(),

@@ -80,12 +80,25 @@ class ReportPage extends Page
                                 ActionButton::make('Excel Barang Keluar', route('report.gudang.keluar.excel'))
                                     ->icon('heroicons.outline.table-cells')->blank()
                             ])->columnSpan(6),
+                            
+                            // Column::make([
+                            //     ActionButton::make('PDF Kerusakan', route('report.kerusakan.pdf'))
+                            //         ->icon('heroicons.outline.printer')->blank()
+                            //         ->customAttributes(['class' => 'btn-warning'])
+                            // ])->columnSpan(6),
+
+                            // Column::make([
+                            //     ActionButton::make('Excel Kerusakan', route('report.kerusakan.excel'))
+                            //         ->icon('heroicons.outline.table-cells')->blank()
+                            //         ->customAttributes(['class' => 'btn-warning'])
+                            // ])->columnSpan(6),
+                            
                         ])
                     ])
                 ])->columnSpan(6), // Setengah Halaman
-
+ 
                 
-                // --- KOLOM KANAN ---
+                // --- KOLOM KANAN --- Uncomment ini jika mau dipake buat skripsi minimal 8 laporan wkwk
                 Column::make([
                     Block::make('Laporan Alur Perbaikan', [
                         // SATU Grid untuk semua tombol di blok ini
