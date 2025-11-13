@@ -113,12 +113,6 @@ Pastikan sistem Anda telah terinstal perangkat lunak berikut:
     npm run dev
     ```
 
-11. **Jalankan Vite**
-    Buka terminal baru dan jalankan Vite untuk kompilasi aset frontend.
-    ```bash
-    npm run dev
-    ```
-
 ## Mengakses Aplikasi
 
 -   **Halaman Utama**: Aplikasi dapat diakses melalui `http://127.0.0.1:8000`.
